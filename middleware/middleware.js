@@ -10,12 +10,17 @@ const middleware = {
         check("precio", 'Precio es requerido').not().isEmpty(),
     ],
     validatorID: async (req, res, next) => {
-        const product = await Product.findById(req.params.id)
-        if (product !== null) {
-            next();
-        } else {
-            res.json({ msg: "El ID es invalido" })
+        try {
+            const product = await Product.findById(req.params.id)
+            if (product !== null) {
+                next();
+            } else {
+                res.status(400).json({ msg: "El ID es invalido" })
+            }
+        } catch (error) {
+            res.status(400).json({ msg: "El formato de ID es invalido" })
         }
+
     },
     validatorProduct: async (req, res, next) => {
         const product = await Product.findOne(req.params)
